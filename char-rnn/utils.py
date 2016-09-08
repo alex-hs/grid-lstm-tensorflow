@@ -1,4 +1,4 @@
-import cPickle
+import pickle
 import collections
 import os
 import codecs
@@ -17,10 +17,10 @@ class TextLoader(object):
         tensor_file = os.path.join(data_dir, "data.npy")
 
         if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
-            print "reading text file"
+            print("reading text file")
             self.preprocess(input_file, vocab_file, tensor_file)
         else:
-            print "loading preprocessed files"
+            print("loading preprocessed files")
             self.load_preprocessed(vocab_file, tensor_file)
         self.create_batches()
         self.reset_batch_pointer()
@@ -29,20 +29,20 @@ class TextLoader(object):
         with codecs.open(input_file, "r") as f:
             data = f.read()
         counter = collections.Counter(data)
-        count_pairs = sorted(counter.items(), key=lambda x: -x[1])
+        count_pairs = sorted(list(counter.items()), key=lambda x: -x[1])
         self.chars, _ = list(zip(*count_pairs))
         self.vocab_size = len(self.chars)
-        self.vocab = dict(zip(self.chars, range(len(self.chars))))
+        self.vocab = dict(list(zip(self.chars, list(range(len(self.chars))))))
         with open(vocab_file, 'w') as f:
-            cPickle.dump(self.chars, f)
-        self.tensor = np.array(map(self.vocab.get, data))
+            pickle.dump(self.chars, f)
+        self.tensor = np.array(list(map(self.vocab.get, data)))
         np.save(tensor_file, self.tensor)
 
     def load_preprocessed(self, vocab_file, tensor_file):
         with open(vocab_file) as f:
-            self.chars = cPickle.load(f)
+            self.chars = pickle.load(f)
         self.vocab_size = len(self.chars)
-        self.vocab = dict(zip(self.chars, range(len(self.chars))))
+        self.vocab = dict(list(zip(self.chars, list(range(len(self.chars))))))
         self.tensor = np.load(tensor_file)
         self.num_batches = self.tensor.size / (self.batch_size * self.seq_length)
 
@@ -57,7 +57,7 @@ class TextLoader(object):
         self.y_batches = np.split(ydata.reshape(self.batch_size, -1), self.num_batches, 1)
 
         validation_batches = int(self.num_batches * .2)
-        self.val_batches = zip(self.x_batches[-validation_batches:], self.y_batches[-validation_batches:])
+        self.val_batches = list(zip(self.x_batches[-validation_batches:], self.y_batches[-validation_batches:]))
         self.x_batches = self.x_batches[:-validation_batches]
         self.y_batches = self.y_batches[:-validation_batches]
         self.num_batches -= validation_batches

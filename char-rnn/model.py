@@ -64,7 +64,7 @@ class Model(object):
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost, tvars),
                                           args.grad_clip)
         optimizer = tf.train.AdamOptimizer(self.lr)
-        self.train_op = optimizer.apply_gradients(zip(grads, tvars))
+        self.train_op = optimizer.apply_gradients(list(zip(grads, tvars)))
 
     def sample(self, sess, chars, vocab, num=200, prime='The '):
         state = self.cell.zero_state(1, tf.float32).eval()
@@ -81,7 +81,7 @@ class Model(object):
 
         ret = prime
         char = prime[-1]
-        for n in xrange(num):
+        for n in range(num):
             x = np.zeros((1, 1))
             x[0, 0] = vocab[char]
             feed = {self.input_data: x, self.initial_state: state}

@@ -1,5 +1,5 @@
 import argparse
-import cPickle
+import pickle
 import os
 
 import tensorflow as tf
@@ -21,9 +21,9 @@ def main():
 
 def sample(args):
     with open(os.path.join(args.save_dir, 'config.pkl')) as f:
-        saved_args = cPickle.load(f)
+        saved_args = pickle.load(f)
     with open(os.path.join(args.save_dir, 'chars_vocab.pkl')) as f:
-        chars, vocab = cPickle.load(f)
+        chars, vocab = pickle.load(f)
     model = Model(saved_args, True)
     with tf.Session() as sess:
         tf.initialize_all_variables().run()
@@ -31,7 +31,7 @@ def sample(args):
         ckpt = tf.train.get_checkpoint_state(args.save_dir)
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
-            print model.sample(sess, chars, vocab, args.n, args.prime)
+            print(model.sample(sess, chars, vocab, args.n, args.prime))
 
 
 if __name__ == '__main__':
