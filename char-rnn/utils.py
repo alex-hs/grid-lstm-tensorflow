@@ -33,21 +33,21 @@ class TextLoader(object):
         self.chars, _ = list(zip(*count_pairs))
         self.vocab_size = len(self.chars)
         self.vocab = dict(list(zip(self.chars, list(range(len(self.chars))))))
-        with open(vocab_file, 'w') as f:
+        with open(vocab_file, 'wb') as f:
             pickle.dump(self.chars, f)
         self.tensor = np.array(list(map(self.vocab.get, data)))
         np.save(tensor_file, self.tensor)
 
     def load_preprocessed(self, vocab_file, tensor_file):
-        with open(vocab_file) as f:
+        with open(vocab_file, 'rb') as f:
             self.chars = pickle.load(f)
         self.vocab_size = len(self.chars)
         self.vocab = dict(list(zip(self.chars, list(range(len(self.chars))))))
         self.tensor = np.load(tensor_file)
-        self.num_batches = self.tensor.size / (self.batch_size * self.seq_length)
+        self.num_batches = self.tensor.size // (self.batch_size * self.seq_length)
 
     def create_batches(self):
-        self.num_batches = self.tensor.size / (self.batch_size * self.seq_length)
+        self.num_batches = self.tensor.size // (self.batch_size * self.seq_length)
         self.tensor = self.tensor[:self.num_batches * self.batch_size * self.seq_length]
         xdata = self.tensor
         ydata = np.copy(self.tensor)

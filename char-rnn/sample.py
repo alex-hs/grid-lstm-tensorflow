@@ -20,9 +20,9 @@ def main():
 
 
 def sample(args):
-    with open(os.path.join(args.save_dir, 'config.pkl')) as f:
+    with open(os.path.join(args.save_dir, 'config.pkl'), 'rb') as f:
         saved_args = pickle.load(f)
-    with open(os.path.join(args.save_dir, 'chars_vocab.pkl')) as f:
+    with open(os.path.join(args.save_dir, 'chars_vocab.pkl'), 'rb') as f:
         chars, vocab = pickle.load(f)
     model = Model(saved_args, True)
     with tf.Session() as sess:

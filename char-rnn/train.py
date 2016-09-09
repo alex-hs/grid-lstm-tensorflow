@@ -44,9 +44,9 @@ def train(args):
     data_loader = TextLoader(args.data_dir, args.batch_size, args.seq_length)
     args.vocab_size = data_loader.vocab_size
 
-    with open(os.path.join(args.save_dir, 'config.pkl'), 'w') as f:
+    with open(os.path.join(args.save_dir, 'config.pkl'), 'wb') as f:
         pickle.dump(args, f)
-    with open(os.path.join(args.save_dir, 'chars_vocab.pkl'), 'w') as f:
+    with open(os.path.join(args.save_dir, 'chars_vocab.pkl'), 'wb') as f:
         pickle.dump((data_loader.chars, data_loader.vocab), f)
 
     model = Model(args)

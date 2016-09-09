@@ -1,7 +1,5 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.models.rnn import rnn_cell
-from tensorflow.models.rnn import seq2seq
 from tensorflow.contrib import grid_rnn
 
 
@@ -11,6 +9,9 @@ class Model(object):
         if infer:
             args.batch_size = 1
             args.seq_length = 1
+
+        rnn_cell = tf.nn.rnn_cell
+        seq2seq = tf.nn.seq2seq
 
         additional_cell_args = {}
         if args.model == 'rnn':
